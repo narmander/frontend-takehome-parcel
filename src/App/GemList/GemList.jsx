@@ -9,7 +9,7 @@ const GemList = props => {
     : props.gems;
 
   return (
-    <div>
+    <ul>
       {gems.map(gem => {
         return (
           <GemRow
@@ -20,11 +20,12 @@ const GemList = props => {
             name={gem.name}
             project_uri={gem.project_uri}
             version={gem.version}
-            save={gem.save}
+            saved={gem.saved}
+            updateGems={props.updateGems}
           />
         );
       })}
-    </div>
+    </ul>
   );
 };
 

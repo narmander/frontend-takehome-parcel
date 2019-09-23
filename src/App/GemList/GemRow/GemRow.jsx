@@ -1,34 +1,27 @@
 import React from 'react';
+import styled from 'styled-components'
+import { saveGem, removeGem } from '../../../utils';
+
+const GemRowStyles = styled.li``;
 
 const GemRow = props => {
-  const { name, version, info, downloads, sha, project_uri, save } = props;
-// updating down here so higher component doesn't know about the change.
-// gives opportunity for someone to refavorite if accidentally unfavorited.
-  const updateGems = save => {
-    let gemCollection = JSON.parse(localStorage.gems);
-    if (save) {
-      gemCollection.push({
-        name,
-        version,
-        info,
-        downloads,
-        sha,
-        project_uri,
-        save,
-      });
+  const { name, version, info, downloads, project_uri, saved } = props;
+
+  const updateGems = savingGem => {
+    if (savingGem) {
+      saveGem(props);
     } else {
-      gemCollection = gemCollection.filter(gem => gem.name !== name)
-    };
-    localStorage.setItem('gems', JSON.stringify(gemCollection));
+      removeGem(name);
+    }
   };
 
   return (
-    <div className="gem-row">
+    <li className="gem-row">
       <span>
-        <h2 className="name">
+        <h3 className="name">
           {name}
           <span className="version">{version}</span>
-        </h2>
+        </h3>
         <p className="description">{info}</p>
       </span>
       <span className="ruby-heart">
@@ -38,7 +31,7 @@ const GemRow = props => {
             className="gem-save-toggle"
             name="gem-save"
             type="checkbox"
-            checked={save}
+            checked={saved}
             onChange={e => updateGems(e.target.checked)}
           />
         </label>
@@ -48,7 +41,7 @@ const GemRow = props => {
         <p className="last-updated">Last updated: 2011-08-08</p>
         <a href={project_uri}>More info</a>
       </span>
-    </div>
+    </li>
   );
 };
 

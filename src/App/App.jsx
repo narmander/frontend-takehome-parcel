@@ -1,88 +1,108 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
 import GemList from './GemList/GemList';
 import SearchBar from './SearchBar/SearchBar';
+import { fetchGems, COLLECTION_DATABASE } from '../utils';
 
-// have on search for gemlist results
-// have on filter search for collection list
+const AppStyles = styled.div`
+  background-color: #f7f5f5;
+  margin: 0 auto;
+  max-width: 1100px;
+  min-height: 100vh;
+  font-family: Rubik, sans-serif;
+`;
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      filterText: '',
-      searchResults: [],
-      searchText: '',
-      showCollection: false,
-    };
+const Header = styled.header`
+  @media (max-width: 1000px) {
+    header {
+      /* Reverse the axis of the header, making it vertical. */
+      flex-direction: column;
 
-    this.queryGems = this.queryGems.bind(this);
-    this.toggle = this.toggle.bind(this);
-    this.updateFilterText = this.updateFilterText.bind(this);
-    this.updateSearchText = this.updateSearchText.bind(this);
+      /* Align items to the begining (the left) of the header. */
+      align-items: flex-start;
+    }
+  }
+  font-family: Rubik, sans-serif;
+  top: 0px;
+  left: 50%;
+  position: fixed;
+  z-index: 1;
+  text-align: center;
+  display: block;
+`;
+
+const App = () => {
+  const [filterText, setFilterText] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchText, setSearchText] = useState('');
+  const [gemCollection, updateGemCollection] = useState(localStorage);
+  const [showCollection, setCollectionView] = useState(false);
+
+  useEffect(() => {
+    if (!gemCollection.length) {
+        localStorage.setItem(COLLECTION_DATABASE, JSON.stringify([]));
+    }
+  }, []);
+
+  function toggle() {
+    setCollectionView(!showCollection);
   }
 
-  componentWillMount() {
-    if(!localStorage.length) localStorage.setItem('gems', JSON.stringify([]));
+  function updateSearchText(searchText) {
+    setSearchText(searchText);
   }
 
-  toggle() {
-    this.setState({ showCollection: !this.state.showCollection });
+  function updateFilterText(filterText) {
+    setFilterText(filterText);
   }
 
-  updateSearchText(searchText) {
-    this.setState({ searchText });
-  }
-
-  updateFilterText(filterText) {
-    this.setState({ filterText });
-  }
-
-  queryGems(e) {
+  function queryGems(e) {
     e.preventDefault();
-    if (!this.state.searchText) return;
-    fetch(`${process.env.HOST_SERVER}query=${this.state.searchText}`, {
-      method: 'GET',
-    })
-      .then(response => response.json())
-      .then(searchResults => {
-        this.setState({ searchResults });
-      });
-  }
-
-  render() {
-    return (
-      <div>
-        <button onClick={this.toggle}>Toggle</button>
-        {this.state.showCollection ? (
-          <>
-            <SearchBar
-              setUserInput={this.updateFilterText}
-              placeholder="Filter gem collection..."
-            />
-            <GemList
-              id="collection"
-              gems={JSON.parse(localStorage.gems)}
-              filterText={this.state.filterText}
-            />
-          </>
-        ) : (
-          <>
-            <SearchBar
-              searchAction={this.queryGems}
-              setUserInput={this.updateSearchText}
-              placeholder="Search for new Ruby gems..."
-              buttonText="Search!"
-            />
-            <GemList
-              id="searchResults"
-              gems={this.state.searchResults}
-              searchResults={true}
-            />
-          </>
-        )}
-      </div>
+    if (!searchText) return;
+    fetchGems(searchText).then(searchResults =>
+      setSearchResults(searchResults)
     );
   }
-}
+
+  return (
+    <AppStyles className="main-app">
+      <Header className="header">
+        <h1>Ruby Gems Search</h1>
+        <h2>Find, favorite, and filter RubyGems.</h2>
+      </Header>
+      <h2>Showing: Gem Collection</h2>
+      <button onClick={toggle}>Toggle</button>
+      {showCollection ? (
+        <>
+          <SearchBar
+            setUserInput={updateFilterText}
+            placeholder="Filter gem collection..."
+            value={filterText}
+          />
+          <GemList
+            id="collection"
+            gems={JSON.parse(localStorage[COLLECTION_DATABASE])}
+            filterText={filterText}
+          />
+        </>
+      ) : (
+        <>
+          <SearchBar
+            searchAction={queryGems}
+            setUserInput={updateSearchText}
+            placeholder="Search for new Ruby gems..."
+            buttonText="Search!"
+            value={searchText}
+          />
+          <GemList
+            id="searchResults"
+            gems={searchResults}
+            searchResults={true}
+          />
+        </>
+      )}
+    </AppStyles>
+  );
+};
 
 export default App;

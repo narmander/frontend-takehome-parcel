@@ -1,13 +1,25 @@
 import React from 'react';
+import styled from 'styled-components';
 
-const SearchButton = props => props.searchAction ? <button onClick={props.searchAction}>{props.buttonText}</button> : '';
+const SearchBarStyles = styled.form``;
 
 const SearchBar = props => {
   return (
-    <form>
-      <input type="text" placeholder={props.placeholder} onChange={e => props.setUserInput(e.target.value)} />
-      <SearchButton {...props} />
-    </form>
+    <SearchBarStyles>
+      <label htmlFor="search"> 
+        <input
+          name="search"
+          type="search"
+          placeholder={props.placeholder}
+          onChange={e => props.setUserInput(e.target.value)}
+        />
+        <button
+          type="submit"
+          onClick={props.searchAction}
+          className="home__search__icon"
+        >⌕</button>
+      </label>
+    </SearchBarStyles>
   );
 };
 
