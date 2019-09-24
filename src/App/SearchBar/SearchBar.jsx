@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const SearchBarStyles = styled.form``;
@@ -21,6 +22,12 @@ const SearchBar = props => {
       </label>
     </SearchBarStyles>
   );
+};
+
+SearchBar.propTypes = {
+  placeholder: PropTypes.string,
+  searchAction: PropTypes.func,
+  setUserInput: PropTypes.func,
 };
 
 export default SearchBar;

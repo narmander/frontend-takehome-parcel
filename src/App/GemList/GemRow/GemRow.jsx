@@ -1,5 +1,7 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components'
+
 import { saveGem, removeGem } from '../../../utils';
 
 const GemRowStyles = styled.li``;
@@ -24,7 +26,7 @@ const GemRow = props => {
         </h3>
         <p className="description">{info}</p>
       </span>
-      <span className="ruby-heart">
+      {/* <span className="ruby-heart">
         <label>
           Save or Remove this Gem
           <input
@@ -35,7 +37,8 @@ const GemRow = props => {
             onChange={e => updateGems(e.target.checked)}
           />
         </label>
-      </span>
+      </span> */}
+      <Ruby />
       <span className="gem-details">
         <p className="download-count">Downloads: {downloads}</p>
         <p className="last-updated">Last updated: 2011-08-08</p>
@@ -43,6 +46,15 @@ const GemRow = props => {
       </span>
     </li>
   );
+};
+
+GemRow.propTypes = {
+  downloads: PropTypes.number,
+  info: PropTypes.string,
+  name: PropTypes.string,
+  project_uri: PropTypes.string,
+  updateGems: PropTypes.func,
+  version: PropTypes.string,
 };
 
 export default GemRow;

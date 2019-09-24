@@ -1,32 +1,66 @@
 import React from 'react';
-import GemRow from './GemRow/GemRow';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
 
-const GemList = props => {
-  if (!props.gems.length) return <div>empty style</div>;
+// import GemRow from './GemRow/GemRow';
+import { Card } from '../../Card';
+import { removeGem, saveGem } from '../../utils';
+import { wrapper } from '../styles';
 
-  const gems = props.filterText
-    ? props.gems.filter(gem => gem.name === props.filterText)
-    : props.gems;
+const savedGems = [];
 
+const GemListStyled = styled.ul`
+  ${wrapper};
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+const GemList = ({ gems, ...props }) => {
+  if (!gems.length) return <GemListStyled>empty style</GemListStyled>;
+
+  // const gems = props.filterText
+  //   ? props.gems.filter(gem => gem.name === props.filterText)
+  //   : props.gems;
+  // {/* <GemRow
+  //             info={gem.info}
+  //             downloads={gem.downloads}
+  //             key={gem.sha}
+  //             sha={gem.sha}
+  //             name={gem.name}
+  //             project_uri={gem.project_uri}
+  //             version={gem.version}
+  //             saved={gem.saved}
+  //             updateGems={props.updateGems}
+  //           /> */}
+  const toggleSavedGem = name => {
+    console.log(name);
+    if (savedGems.includes(name)) {
+      removeGem(name);
+    } else {
+      saveGem(name);
+    }
+  };
   return (
-    <ul>
-      {gems.map(gem => {
+    <GemListStyled>
+      {gems.map(({ name, info, version, downloads, saved, project_uri }) => {
         return (
-          <GemRow
-            info={gem.info}
-            downloads={gem.downloads}
-            key={gem.sha}
-            sha={gem.sha}
-            name={gem.name}
-            project_uri={gem.project_uri}
-            version={gem.version}
-            saved={gem.saved}
-            updateGems={props.updateGems}
+          <Card
+            title={name}
+            info={info}
+            version={version}
+            downloads={downloads}
+            href={project_uri}
+            onIconClick={() => toggleSavedGem(name)}
+            saved={saved}
           />
         );
       })}
-    </ul>
+    </GemListStyled>
   );
+};
+
+GemList.propTypes = {
+  gems: PropTypes.array,
 };
 
 export default GemList;

@@ -1,5 +1,39 @@
-//application consts
+//application constants
 export const COLLECTION_DATABASE = 'GEMS';
+export const SET_FILTER_TEXT = 'SET_FILTER_TEXT';
+export const SET_SEARCH_RESULTS = 'SET_SEARCH_RESULTS';
+export const SET_SEARCH_TEXT = 'SET_SEARCH_TEXT';
+export const UPDATE_GEM_COLLECTION = 'UPDATE_GEM_COLLECTION';
+
+// application data reducer
+export const reducer = (state, { action, payload }) => {
+  switch (action) {
+    case SET_SEARCH_RESULTS:
+      return {
+        ...state,
+        searchResults: payload,
+      };
+    case SET_FILTER_TEXT:
+      return {
+        ...state,
+        filterText: payload,
+      };
+    case SET_SEARCH_TEXT:
+      return {
+        ...state,
+        searchText: payload,
+      };
+    case UPDATE_GEM_COLLECTION:
+      return {
+        ...state,
+        gemCollection: payload,
+      };
+    default:
+      return {
+        ...state,
+      };
+  }
+};
 
 // application utility functions
 export const fetchGems = searchText => {
@@ -9,7 +43,9 @@ export const fetchGems = searchText => {
     method: 'GET',
   })
     .then(response => response.json())
-    .then(searchResults => searchResults);
+    .then(searchResults => {
+      dispatch({ action: SET_SEARCH_RESULTS, payload: searchResults });
+    });
 };
 
 export const saveGem = ({
@@ -31,6 +67,7 @@ export const saveGem = ({
     project_uri,
     saved,
   });
+  dispatch({ action: UPDATE_GEM_COLLECTION, payload: gemCollection});
   localStorage.setItem(COLLECTION_DATABASE, JSON.stringify(gemCollection));
 };
 
@@ -38,22 +75,6 @@ export const removeGem = gemToBeRemoved => {
   let gemCollection = JSON.parse(localStorage[COLLECTION_DATABASE]);
 
   gemCollection = gemCollection.filter(gem => gem.name !== gemToBeRemoved);
+  dispatch({ action: UPDATE_GEM_COLLECTION, payload: gemCollection});
   localStorage.setItem(COLLECTION_DATABASE, JSON.stringify(gemCollection));
-};
-
-export const normalizeData = data => {
-  let normalizedData = [];
-
-  for (let gem in data) {
-    normalizedData.push({
-      [gem]: parsedGem.name,
-      description: parsedGem.info,
-      downloads: parsedGem.downloads,
-      project_uri: parsedGem.project_uri,
-      sha: parsedGem.sha,
-      version: parsedGem.version,
-    });
-  }
-
-  return normalizedData;
 };
