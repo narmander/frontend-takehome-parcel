@@ -6,13 +6,17 @@ import GemList from './GemList/GemList';
 import SearchBar from './SearchBar/SearchBar';
 import { GlobalStyles, Wrapper } from './styles';
 import {
+  hasGem,
+  saveGem,
+  removeGem,
   fetchGems,
   reducer,
   COLLECTION_DATABASE,
   SET_SEARCH_TEXT,
   SET_FILTER_TEXT,
+  SET_SEARCH_RESULTS,
+  UPDATE_GEM_COLLECTION,
 } from '../utils';
-
 
 const App = () => {
   const [showCollection, setCollectionView] = useState(false);
@@ -20,7 +24,7 @@ const App = () => {
     searchResults: [],
     filterText: '',
     searchText: '',
-    gemCollection: [],
+    gemCollection: {},
   });
   const { searchResults, filterText, searchText, gemCollection } = state;
 
@@ -28,7 +32,7 @@ const App = () => {
     // we only need this to happen once when app first renders to set "database" array
     // an empty array passed as second argument prevents this effect from running again
     if (!localStorage.length) {
-      localStorage.setItem(COLLECTION_DATABASE, JSON.stringify(gemCollection));
+      localStorage.setItem(COLLECTION_DATABASE, JSON.stringify([]));
     }
   }, []);
 
@@ -47,7 +51,17 @@ const App = () => {
   function queryGems(e) {
     e.preventDefault();
     if (!searchText) return;
-    fetchGems(searchText);
+    fetchGems(searchText).then(results =>
+      dispatch({ action: SET_SEARCH_RESULTS, payload: results })
+    );
+  }
+
+  function updateGems(gem) {
+    if(gemCollection[gem.name]) {
+      dispatch({ action: UPDATE_GEM_COLLECTION, payload: removeGem(gem.name)})
+    } else {
+      dispatch({action: UPDATE_GEM_COLLECTION, payload: saveGem(gem)})
+    }
   }
 
   return (
@@ -61,32 +75,44 @@ const App = () => {
           </Wrapper>
         </Header>
         <Wrapper>
-          <h2>Showing: Gem Collection</h2>
           <button onClick={toggle}>Toggle</button>
           {showCollection ? (
-            <SearchBar
-              setUserInput={updateFilterText}
-              placeholder="Filter gem collection..."
-              value={filterText}
-            />
+            <>
+              <h2>Showing: Collection Results</h2>
+              <SearchBar
+                setUserInput={updateFilterText}
+                placeholder="Filter gem collection..."
+                value={filterText}
+              />
+            </>
           ) : (
-            <SearchBar
-              searchAction={queryGems}
-              setUserInput={updateSearchText}
-              placeholder="Search for new Ruby gems..."
-              buttonText="Search!"
-              value={searchText}
-            />
+            <>
+              <h2>Showing: Search Results</h2>
+              <SearchBar
+                searchAction={queryGems}
+                setUserInput={updateSearchText}
+                placeholder="Search for new Ruby gems..."
+                buttonText="Search!"
+                value={searchText}
+              />
+            </>
           )}
         </Wrapper>
         {showCollection ? (
           <GemList
             id="collection"
-            gems={gemCollection}
+            gems={JSON.parse(localStorage[COLLECTION_DATABASE])}
             filterText={filterText}
+            updateGems={updateGems}
+            gemCollection={gemCollection}
           />
         ) : (
-          <GemList id="searchResults" gems={searchResults} />
+          <GemList
+            id="searchResults"
+            gems={searchResults}
+            updateGems={updateGems}
+            gemCollection={gemCollection}
+          />
         )}
       </AppStyles>
     </>

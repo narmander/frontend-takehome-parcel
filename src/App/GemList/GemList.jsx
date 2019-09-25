@@ -2,12 +2,34 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-// import GemRow from './GemRow/GemRow';
-import { Card } from '../../Card';
-import { removeGem, saveGem } from '../../utils';
+import { Card } from '../../shared-components/Card/Card';
+import { removeGem, saveGem, updateGems } from '../../utils';
 import { wrapper } from '../styles';
 
-const savedGems = [];
+const GemList = ({ gems, filterText, updateGems, gemCollection, ...props }) => {
+  if (!gems.length) return <GemListStyled>empty style</GemListStyled>;
+  if(filterText) gems = gems.filter(gem => gem.name === filterText)
+
+  return (
+    <GemListStyled>
+      {gems.map(({ name, info, version, downloads, project_uri, sha}) => {
+        return (
+            <Card
+              className="gem-card"
+              key={sha}
+              toggled={gemCollection[name]}
+              title={name}
+              info={info}
+              version={version}
+              downloads={downloads}
+              href={project_uri}
+              onIconClick={() => updateGems({ name, info, version, downloads, project_uri, sha })}
+            />
+        );
+      })}
+    </GemListStyled>
+  );
+};
 
 const GemListStyled = styled.ul`
   ${wrapper};
@@ -15,52 +37,17 @@ const GemListStyled = styled.ul`
   flex-wrap: wrap;
 `;
 
-const GemList = ({ gems, ...props }) => {
-  if (!gems.length) return <GemListStyled>empty style</GemListStyled>;
-
-  // const gems = props.filterText
-  //   ? props.gems.filter(gem => gem.name === props.filterText)
-  //   : props.gems;
-  // {/* <GemRow
-  //             info={gem.info}
-  //             downloads={gem.downloads}
-  //             key={gem.sha}
-  //             sha={gem.sha}
-  //             name={gem.name}
-  //             project_uri={gem.project_uri}
-  //             version={gem.version}
-  //             saved={gem.saved}
-  //             updateGems={props.updateGems}
-  //           /> */}
-  const toggleSavedGem = name => {
-    console.log(name);
-    if (savedGems.includes(name)) {
-      removeGem(name);
-    } else {
-      saveGem(name);
-    }
-  };
-  return (
-    <GemListStyled>
-      {gems.map(({ name, info, version, downloads, saved, project_uri }) => {
-        return (
-          <Card
-            title={name}
-            info={info}
-            version={version}
-            downloads={downloads}
-            href={project_uri}
-            onIconClick={() => toggleSavedGem(name)}
-            saved={saved}
-          />
-        );
-      })}
-    </GemListStyled>
-  );
-};
-
 GemList.propTypes = {
   gems: PropTypes.array,
+};
+
+Card.propTypes = {
+  downloads: PropTypes.number,
+  info: PropTypes.string,
+  name: PropTypes.string,
+  project_uri: PropTypes.string,
+  updateGems: PropTypes.func,
+  version: PropTypes.string,
 };
 
 export default GemList;

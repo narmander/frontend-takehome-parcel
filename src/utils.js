@@ -26,8 +26,8 @@ export const reducer = (state, { action, payload }) => {
     case UPDATE_GEM_COLLECTION:
       return {
         ...state,
-        gemCollection: payload,
-      };
+        gemCollection: Object.assign({}, state.gemCollection, payload),
+      }
     default:
       return {
         ...state,
@@ -43,9 +43,7 @@ export const fetchGems = searchText => {
     method: 'GET',
   })
     .then(response => response.json())
-    .then(searchResults => {
-      dispatch({ action: SET_SEARCH_RESULTS, payload: searchResults });
-    });
+    .then(searchResults => searchResults);
 };
 
 export const saveGem = ({
@@ -55,26 +53,29 @@ export const saveGem = ({
   downloads,
   sha,
   project_uri,
-  saved,
 }) => {
-  const gemCollection = JSON.parse(localStorage[COLLECTION_DATABASE]);
-  gemCollection.push({
+  const database = JSON.parse(localStorage[COLLECTION_DATABASE]);
+
+  database.push({
     name,
     version,
     info,
     downloads,
     sha,
     project_uri,
-    saved,
   });
-  dispatch({ action: UPDATE_GEM_COLLECTION, payload: gemCollection});
-  localStorage.setItem(COLLECTION_DATABASE, JSON.stringify(gemCollection));
+
+  localStorage.setItem(COLLECTION_DATABASE, JSON.stringify(database));
+
+  return { [name]: true };
 };
 
-export const removeGem = gemToBeRemoved => {
-  let gemCollection = JSON.parse(localStorage[COLLECTION_DATABASE]);
+export const removeGem = gemToRemove => {
+  const database = JSON.parse(localStorage[COLLECTION_DATABASE]).filter(
+    gem => gem.name !== gemToRemove
+  );
 
-  gemCollection = gemCollection.filter(gem => gem.name !== gemToBeRemoved);
-  dispatch({ action: UPDATE_GEM_COLLECTION, payload: gemCollection});
-  localStorage.setItem(COLLECTION_DATABASE, JSON.stringify(gemCollection));
+  localStorage.setItem(COLLECTION_DATABASE, JSON.stringify(database));
+
+  return { [gemToRemove]: false };
 };
