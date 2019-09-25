@@ -68,7 +68,7 @@ export const removeGem = gemToRemove => {
   let database = JSON.parse(localStorage[COLLECTION_DATABASE]);
 
   database = database.filter(gem => gem.name !== gemToRemove);
-  console.log('delete', database)
+
   localStorage.setItem(COLLECTION_DATABASE, JSON.stringify(database));
   localStorage.removeItem(gemToRemove);
 };
