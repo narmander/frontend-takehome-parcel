@@ -3,28 +3,33 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import { Card } from '../../shared-components/Card/Card';
-import { removeGem, saveGem, updateGems } from '../../utils';
 import { wrapper } from '../styles';
 
-const GemList = ({ gems, filterText, updateGems, gemCollection, ...props }) => {
+const GemList = ({
+  gems,
+  filterText,
+  updateGems,
+  ...props
+}) => {
   if (!gems.length) return <GemListStyled>empty style</GemListStyled>;
-  if(filterText) gems = gems.filter(gem => gem.name === filterText)
 
   return (
     <GemListStyled>
-      {gems.map(({ name, info, version, downloads, project_uri, sha}) => {
+      {gems.map(({ name, info, version, downloads, project_uri, sha }) => {
         return (
-            <Card
-              className="gem-card"
-              key={sha}
-              toggled={gemCollection[name]}
-              title={name}
-              info={info}
-              version={version}
-              downloads={downloads}
-              href={project_uri}
-              onIconClick={() => updateGems({ name, info, version, downloads, project_uri, sha })}
-            />
+          <Card
+            className="gem-card"
+            key={sha}
+            toggled={localStorage.getItem(name)}
+            title={name}
+            info={info}
+            version={version}
+            downloads={downloads}
+            href={project_uri}
+            onIconClick={() =>
+              updateGems({ name, info, version, downloads, project_uri, sha })
+            }
+          />
         );
       })}
     </GemListStyled>

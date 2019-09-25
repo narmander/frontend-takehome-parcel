@@ -13,11 +13,6 @@ export const reducer = (state, { action, payload }) => {
         ...state,
         searchResults: payload,
       };
-    case SET_FILTER_TEXT:
-      return {
-        ...state,
-        filterText: payload,
-      };
     case SET_SEARCH_TEXT:
       return {
         ...state,
@@ -26,7 +21,7 @@ export const reducer = (state, { action, payload }) => {
     case UPDATE_GEM_COLLECTION:
       return {
         ...state,
-        gemCollection: Object.assign({}, state.gemCollection, payload),
+        gemCollection: payload,
       }
     default:
       return {
@@ -54,7 +49,7 @@ export const saveGem = ({
   sha,
   project_uri,
 }) => {
-  const database = JSON.parse(localStorage[COLLECTION_DATABASE]);
+  let database = JSON.parse(localStorage[COLLECTION_DATABASE]);
 
   database.push({
     name,
@@ -66,16 +61,14 @@ export const saveGem = ({
   });
 
   localStorage.setItem(COLLECTION_DATABASE, JSON.stringify(database));
-
-  return { [name]: true };
+  localStorage.setItem(name, 'true');
 };
 
 export const removeGem = gemToRemove => {
-  const database = JSON.parse(localStorage[COLLECTION_DATABASE]).filter(
-    gem => gem.name !== gemToRemove
-  );
+  let database = JSON.parse(localStorage[COLLECTION_DATABASE]);
 
+  database = database.filter(gem => gem.name !== gemToRemove);
+  console.log('delete', database)
   localStorage.setItem(COLLECTION_DATABASE, JSON.stringify(database));
-
-  return { [gemToRemove]: false };
+  localStorage.removeItem(gemToRemove);
 };

@@ -6,14 +6,12 @@ import GemList from './GemList/GemList';
 import SearchBar from './SearchBar/SearchBar';
 import { GlobalStyles, Wrapper } from './styles';
 import {
-  hasGem,
   saveGem,
   removeGem,
   fetchGems,
   reducer,
   COLLECTION_DATABASE,
   SET_SEARCH_TEXT,
-  SET_FILTER_TEXT,
   SET_SEARCH_RESULTS,
   UPDATE_GEM_COLLECTION,
 } from '../utils';
@@ -22,9 +20,8 @@ const App = () => {
   const [showCollection, setCollectionView] = useState(false);
   const [state, dispatch] = useReducer(reducer, {
     searchResults: [],
-    filterText: '',
     searchText: '',
-    gemCollection: {},
+    gemCollection: [],
   });
   const { searchResults, filterText, searchText, gemCollection } = state;
 
@@ -44,10 +41,6 @@ const App = () => {
     dispatch({ action: SET_SEARCH_TEXT, payload: searchText });
   }
 
-  function updateFilterText(filterText) {
-    dispatch({ action: SET_FILTER_TEXT, payload: filterText });
-  }
-
   function queryGems(e) {
     e.preventDefault();
     if (!searchText) return;
@@ -57,11 +50,15 @@ const App = () => {
   }
 
   function updateGems(gem) {
-    if(gemCollection[gem.name]) {
-      dispatch({ action: UPDATE_GEM_COLLECTION, payload: removeGem(gem.name)})
+    if (localStorage.getItem(gem.name)) {
+      removeGem(gem.name);
     } else {
-      dispatch({action: UPDATE_GEM_COLLECTION, payload: saveGem(gem)})
+      saveGem(gem);
     }
+    dispatch({
+      action: UPDATE_GEM_COLLECTION,
+      payload: JSON.parse(localStorage[COLLECTION_DATABASE]),
+    });
   }
 
   return (
@@ -79,11 +76,6 @@ const App = () => {
           {showCollection ? (
             <>
               <h2>Showing: Collection Results</h2>
-              <SearchBar
-                setUserInput={updateFilterText}
-                placeholder="Filter gem collection..."
-                value={filterText}
-              />
             </>
           ) : (
             <>
@@ -101,17 +93,15 @@ const App = () => {
         {showCollection ? (
           <GemList
             id="collection"
-            gems={JSON.parse(localStorage[COLLECTION_DATABASE])}
+            gems={gemCollection}
             filterText={filterText}
             updateGems={updateGems}
-            gemCollection={gemCollection}
           />
         ) : (
           <GemList
             id="searchResults"
             gems={searchResults}
             updateGems={updateGems}
-            gemCollection={gemCollection}
           />
         )}
       </AppStyles>
