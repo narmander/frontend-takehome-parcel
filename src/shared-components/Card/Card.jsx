@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 
-import { Ruby as R } from '../../assets/icons/Ruby';
+import { Ruby } from '../../assets/icons/Ruby';
+import { RED } from '../../assets/colors';
+
+// component is taking in custom props but could easily be switched to be more generic and take different props when scaling for reuse.
 
 export const Card = ({
   downloads,
@@ -15,29 +18,28 @@ export const Card = ({
 }) => {
   return (
     <CardStyled {...props}>
-      <Ruby onClick={onIconClick} saved={toggled ? 1 : 0}/>
+      <Icon onClick={onIconClick} saved={toggled} />
       <div style={{ flexGrow: 1 }}>
         <div>
           <Title>{title}</Title>
-          <Version>{version}</Version>
+          <SubTitle>{version}</SubTitle>
         </div>
         <Description>{info}</Description>
       </div>
-      <Downloads>
+      <Details>
         {downloads}
         <Label>downloads</Label>
-      </Downloads>
+        <InfoLink href={href} target="blank">
+          More Info
+        </InfoLink>
+      </Details>
     </CardStyled>
   );
 };
 
-const Label = styled.span`
-  display: block;
-  font-family: Lato, sans-serif;
-`;
-
 const CardStyled = styled.div`
-  padding: 16px;
+  padding: 15px;
+  position: relative;
   box-shadow: 0 0 8px 4px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   transition: ease-in-out 120ms;
@@ -47,27 +49,27 @@ const CardStyled = styled.div`
   }
 
   width: 100%;
-  margin: 32px;
+  margin: 30px;
 
-  /* tablet */
-  @media screen and (min-width: 640px) {
-    /* width: calc(50% - 64px); */
+  /* cell phone */
+  @media screen and (min-width: 400px) {
     width: 60%;
     margin: 32px auto;
   }
 
-  /* laptop */
-  @media screen and (min-width: 800px) {
+  /* tablet */
+  @media screen and (min-width: 700px) {
     width: calc(50% - 64px);
   }
 
-  /* desktop */
+  /* laptop/desktop */
   @media screen and (min-width: 1000px) {
-    width: calc(33% - 64px);
+    width: calc(50% - 64px);
   }
 `;
 
-const Ruby = styled(R)`
+// const Icon = styled(({saved, ...props}) => <Ruby {...props} />)`
+const Icon = styled(Ruby)`
   width: 50px;
   height: 50px;
   min-width: 50px;
@@ -76,26 +78,32 @@ const Ruby = styled(R)`
   transition: ease-in-out 120ms;
 
   path {
-    stroke: red;
+    stroke: ${RED};
     transition: ease-in-out 120ms;
   }
-
-  ${props =>
-    !!props.saved &&
-    css`
-      path {
-        fill: red;
-        stroke: white;
-      }
-    `}
 
   &:hover {
     transform: translateY(-2px) scale(1.2);
     path {
-      fill: red;
+      fill: rgba(255, 0, 0, 0.5);
       stroke: white;
     }
   }
+
+  ${props =>
+    props.saved &&
+    css`
+      path {
+        fill: ${RED};
+        stroke: white;
+      }
+
+      &:hover {
+        path {
+          fill: ${RED};
+        }
+      }
+    `}
 `;
 
 const Title = styled.h3`
@@ -105,15 +113,43 @@ const Title = styled.h3`
   display: inline-block;
 `;
 
-const Version = styled.span`
+const SubTitle = styled.span`
   display: inline-block;
 `;
 
 const Description = styled.p`
   font-family: Lato, sans-serif;
+  color: #8f8f8f;
+  margin-right: 5px;
 `;
 
-const Downloads = styled.span`
+const Details = styled.div`
   text-align: right;
-  width: 150px;
+  width: 70px;
+  position: relative;
+  margin-top: 3px;
+`;
+
+const Label = styled.span`
+  display: block;
+  color: #8f8f8f;
+  font-family: Lato, sans-serif;
+`;
+
+const InfoLink = styled.a`
+  position: absolute;
+  display: block;
+  text-decoration: none;
+  font-family: Lato, sans-serif;
+  transition: ease-in-out 120ms;
+  width: 70px;
+
+  &:link {
+    color: ${RED};
+  }
+
+  &:hover {
+    transform: translateY(-1px) scale(1.1);
+    color: ${RED};
+  }
 `;

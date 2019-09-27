@@ -18,6 +18,11 @@ export const reducer = (state, { action, payload }) => {
         ...state,
         searchText: payload,
       };
+    case SET_FILTER_TEXT:
+      return {
+        ...state,
+        filterText: payload,
+      }
     case UPDATE_GEM_COLLECTION:
       return {
         ...state,
@@ -32,8 +37,6 @@ export const reducer = (state, { action, payload }) => {
 
 // application utility functions
 export const fetchGems = searchText => {
-  // add error handling
-  // add loading state?
   return fetch(`${process.env.HOST_SERVER}query=${searchText}`, {
     method: 'GET',
   })

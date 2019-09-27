@@ -1,0 +1,94 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Icon turns red when clicked 1`] = `
+<div
+  className="sc-bdVaJa jnBuUC"
+>
+  <svg
+    className="sc-bwzfXH gGkBbC"
+    saved={0}
+    viewBox="0 0 64 80"
+  >
+    <g>
+      <path
+        d="m 32,52.000023 -20,-25 10,-15 20,0 10,15 z"
+        fill="none"
+        stroke="BLACK"
+        strokeDasharray="none"
+        strokeLinecap="butt"
+        strokeLinejoin="round"
+        strokeMiterlimit="4"
+        strokeOpacity="1"
+        strokeWidth="1.5"
+      />
+      <path
+        d="m 37,12.000023 5,15 -10,25"
+        fill="none"
+        stroke="BLACK"
+        strokeDasharray="none"
+        strokeLinecap="butt"
+        strokeLinejoin="round"
+        strokeMiterlimit="4"
+        strokeOpacity="1"
+        strokeWidth="1.5"
+      />
+      <path
+        d="m 27,12.000023 -5,15 10,25"
+        fill="none"
+        stroke="BLACK"
+        strokeDasharray="none"
+        strokeLinecap="butt"
+        strokeLinejoin="round"
+        strokeMiterlimit="4"
+        strokeOpacity="1"
+        strokeWidth="1.5"
+      />
+      <path
+        d="m 52,27.000023 -40,0"
+        fill="none"
+        stroke="BLACK"
+        strokeDasharray="none"
+        strokeLinecap="butt"
+        strokeLinejoin="round"
+        strokeMiterlimit="4"
+        strokeOpacity="1"
+        strokeWidth="1.5"
+      />
+    </g>
+  </svg>
+  <div
+    style={
+      Object {
+        "flexGrow": 1,
+      }
+    }
+  >
+    <div>
+      <h3
+        className="sc-htpNat iSsIGQ"
+      />
+      <span
+        className="sc-bxivhb jzkpli"
+      />
+    </div>
+    <p
+      className="sc-ifAKCX flkLYl"
+    />
+  </div>
+  <div
+    className="sc-EHOje igtscQ"
+  >
+    <span
+      className="sc-bZQynM opGmY"
+    >
+      downloads
+    </span>
+    <a
+      className="sc-gzVnrw gVXohH"
+      target="blank"
+    >
+      More Info
+    </a>
+  </div>
+</div>
+`;

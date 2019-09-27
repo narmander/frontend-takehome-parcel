@@ -3,15 +3,19 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import { Card } from '../../shared-components/Card/Card';
-import { wrapper } from '../styles';
+import { wrapper, Wrapper } from '../../assets/styles';
 
-const GemList = ({
-  gems,
-  filterText,
-  updateGems,
-  ...props
-}) => {
-  if (!gems.length) return <GemListStyled>empty style</GemListStyled>;
+const EmptyState = props => {
+  return (
+    <Wrapper>
+      <h2 style={{ margin: '0 auto' }}>{props.emptyStateText}</h2>
+    </Wrapper>
+  );
+};
+
+const GemList = ({ gems, filterText, updateGems, ...props }) => {
+  if (!gems.length) return <EmptyState {...props} />;
+  if (filterText) gems = gems.filter(gem => !!gem.name.match(filterText));
 
   return (
     <GemListStyled>

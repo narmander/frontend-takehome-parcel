@@ -7,6 +7,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   body {
+    background-color: #ffa597;
     margin: 0;
     padding: 0;
   }
@@ -22,10 +23,9 @@ export const GlobalStyles = createGlobalStyle`
 `;
 
 // wrapper for keeping all elements in the same box-model styles
-const wrapper = css`
+export const wrapper = css`
   padding: 16px;
   max-width: 1200px;
-  border: 1px solid red;
   margin: 0 auto;
 `;
 
