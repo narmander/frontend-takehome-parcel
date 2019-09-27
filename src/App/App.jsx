@@ -21,6 +21,7 @@ import {
 } from '../utils/utils';
 
 const App = () => {
+  // built in react reducer used to delegate reused and changing data types to different components
   const [state, dispatch] = useReducer(reducer, {
     emptyStateText: 'Search for some new Ruby Gems.',
     filterText: '',
@@ -29,6 +30,7 @@ const App = () => {
     searchText: '',
   });
   const { searchResults, searchText, filterText, emptyStateText } = state;
+  // state is used here since it only controls the view of the App
   const [showCollection, setShowCollection] = useState(false);
 
   useEffect(() => {
@@ -40,6 +42,7 @@ const App = () => {
   }, []);
 
   function toggle() {
+    // clear all states and update view
     updateSearchText('');
     updateFilterText('');
     updateEmptyStateText('Search for some new Ruby Gems.');
