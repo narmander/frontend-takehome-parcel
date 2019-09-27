@@ -1,5 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
+import PropTypes from 'prop-types';
 
 import { Ruby } from '../assets/icons/Ruby';
 import { RED, GRAY, OFF_WHITE } from '../assets/colors';
@@ -155,3 +156,14 @@ const InfoLink = styled.a`
     color: ${RED};
   }
 `;
+
+
+Card.PropTypes = {
+  downloads: PropTypes.number,
+  href: PropTypes.string,
+  info: PropTypes.string,
+  onIconClick: PropTypes.func,
+  title: PropTypes.string,
+  version: PropTypes.string,
+  toggled: PropTypes.func,
+}
