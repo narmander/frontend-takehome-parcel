@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 
-import { Ruby } from '../../assets/icons/Ruby';
-import { RED } from '../../assets/colors';
+import { Ruby } from '../assets/icons/Ruby';
+import { RED, GRAY, OFF_WHITE } from '../assets/colors';
 
-// component is taking in custom props but could easily be switched to be more generic and take different props when scaling for reuse.
+// component is taking in custom props but could easily be switched to be more generic 
+// and take different props when scaling for reuse.
 
 export const Card = ({
   downloads,
@@ -40,6 +41,7 @@ export const Card = ({
 const CardStyled = styled.div`
   padding: 15px;
   position: relative;
+  background-color: ${OFF_WHITE};
   box-shadow: 0 0 8px 4px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   transition: ease-in-out 120ms;
@@ -119,7 +121,7 @@ const SubTitle = styled.span`
 
 const Description = styled.p`
   font-family: Lato, sans-serif;
-  color: #8f8f8f;
+  color: ${GRAY};
   margin-right: 5px;
 `;
 
@@ -132,7 +134,7 @@ const Details = styled.div`
 
 const Label = styled.span`
   display: block;
-  color: #8f8f8f;
+  color: ${GRAY};
   font-family: Lato, sans-serif;
 `;
 

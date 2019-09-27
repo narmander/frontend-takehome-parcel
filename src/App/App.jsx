@@ -1,38 +1,35 @@
 import React, { useState, useEffect, useReducer } from 'react';
 import PropTypes from 'prop-types';
-import styled, { ThemeProvider } from 'styled-components';
+import styled from 'styled-components';
 
-import GemList from './GemList/GemList';
-import { SearchBar } from '../shared-components/SearchBar/SearchBar';
-import { Button } from '../shared-components/Button';
+import GemList from './GemList';
+import { SearchBar } from '../shared-components/SearchBar';
+import { Button as Toggle } from '../shared-components/Button';
+import { OFF_WHITE } from '../assets/colors';
 import { GlobalStyles, Wrapper } from '../assets/styles';
 import {
-  saveGem,
-  removeGem,
   fetchGems,
   reducer,
+  removeGem,
+  saveGem,
   COLLECTION_DATABASE,
-  SET_SEARCH_TEXT,
-  SET_SEARCH_RESULTS,
-  UPDATE_GEM_COLLECTION,
   SET_FILTER_TEXT,
-} from '../utils';
-
-import { themes, BLACK, WHITE, RED, BLUE } from '../assets/colors';
+  SET_EMPTY_STATE_TEXT,
+  SET_SEARCH_RESULTS,
+  SET_SEARCH_TEXT,
+  UPDATE_GEM_COLLECTION,
+} from '../utils/utils';
 
 const App = () => {
-  const [showCollection, setCollectionView] = useState(false);
-  const [emptyStateText, setEmptyStateText] = useState(
-    'Search for some new Ruby Gems.'
-  );
-  const [theme, setTheme] = useState(themes.red);
   const [state, dispatch] = useReducer(reducer, {
+    emptyStateText: 'Search for some new Ruby Gems.',
     filterText: '',
+    gemCollection: {},
     searchResults: [],
     searchText: '',
-    gemCollection: {},
   });
-  const { searchResults, searchText, filterText } = state;
+  const { searchResults, searchText, filterText, emptyStateText } = state;
+  const [showCollection, setShowCollection] = useState(false);
 
   useEffect(() => {
     // we only need this to happen once when app first renders to set "database" array
@@ -43,10 +40,17 @@ const App = () => {
   }, []);
 
   function toggle() {
-    updateFilterText('');
     updateSearchText('');
-    setEmptyStateText('Search for some new Ruby Gems.');
-    setCollectionView(!showCollection);
+    updateFilterText('');
+    updateEmptyStateText('Search for some new Ruby Gems.');
+    setShowCollection(!showCollection);
+  }
+
+  function updateEmptyStateText(emptyStateText) {
+    dispatch({
+      action: SET_EMPTY_STATE_TEXT,
+      payload: emptyStateText,
+    });
   }
 
   function updateSearchText(searchText) {
@@ -60,9 +64,13 @@ const App = () => {
   function queryGems(e) {
     e.preventDefault();
     if (!searchText) return;
+
     fetchGems(searchText).then(results => {
       if (!results.length)
-        setEmptyStateText('Sorry no gems came back from that query...');
+        dispatch({
+          action: SET_EMPTY_STATE_TEXT,
+          payload: 'Sorry no gems came back from that query...',
+        });
       dispatch({ action: SET_SEARCH_RESULTS, payload: results });
     });
   }
@@ -82,50 +90,21 @@ const App = () => {
   return (
     <>
       <GlobalStyles />
-      <ThemeProvider theme={theme}>
-        <AppStyles className="main-app">
-          <Header className="header">
-            <Wrapper>
-              <h1>Ruby Gems Search</h1>
-              <h2>Find, favorite, and filter Ruby Gems.</h2>
-              <ThemeToggle
-                onClick={() => setTheme(themes.red)}
-                style={{ background: RED }}
-              />
-              <ThemeToggle
-                onClick={() => setTheme(themes.dark)}
-                style={{ background: BLACK }}
-              />
-              <ThemeToggle
-                onClick={() => setTheme(themes.light)}
-                style={{ background: WHITE }}
-              />
-              <ThemeToggle
-                onClick={() => setTheme(themes.blue)}
-                style={{ background: BLUE }}
-              />
-            </Wrapper>
-          </Header>
-          {showCollection ? (
-            <>
-              <SearchBar
-                setUserInput={updateFilterText}
-                placeholder="Filter your collection..."
-                value={filterText}
-              />
-            </>
-          ) : (
-            <>
-              <SearchBar
-                searchAction={queryGems}
-                setUserInput={updateSearchText}
-                placeholder="Search for new Ruby gems..."
-                value={searchText}
-              />
-            </>
-          )}
-          <Button onClick={toggle} children={['Search', 'Collection']} />
-          {showCollection ? (
+      <AppStyles className="main-app">
+        <Header className="header">
+          <Wrapper>
+            <h1>Ruby Gems Search</h1>
+            <h2>Find, favorite, and filter Ruby Gems.</h2>
+          </Wrapper>
+        </Header>
+        {showCollection ? (
+          <>
+            <SearchBar
+              setUserInput={updateFilterText}
+              placeholder="Filter your collection..."
+              value={filterText}
+            />
+            <Toggle onClick={toggle}>Show Search Results</Toggle>
             <GemList
               id="collection"
               filterText={filterText}
@@ -133,23 +112,32 @@ const App = () => {
               updateGems={updateGems}
               emptyStateText="You don't have any gems saved yet! Go search for some!"
             />
-          ) : (
+          </>
+        ) : (
+          <>
+            <SearchBar
+              searchAction={queryGems}
+              setUserInput={updateSearchText}
+              placeholder="Search for Ruby gems..."
+              value={searchText}
+            />
+            <Toggle onClick={toggle}>Show Collection</Toggle>
             <GemList
               id="searchResults"
               gems={searchResults}
               updateGems={updateGems}
               emptyStateText={emptyStateText}
             />
-          )}
-        </AppStyles>
-      </ThemeProvider>
+          </>
+        )}
+      </AppStyles>
     </>
   );
 };
 
 const AppStyles = styled.div`
   padding: 100px 20px 0;
-  background-color: ${props => props.theme.background};
+  background-color: ${OFF_WHITE};
   margin: 0 auto;
   max-width: 1100px;
   min-height: 100vh;
@@ -165,8 +153,7 @@ const Header = styled.header`
     }
   }
   box-shadow: 0 0 8px 4px rgba(0, 0, 0, 0.3);
-  background-color: ${props => props.theme.background};
-  color: ${props => props.theme.color};
+  background-color: ${OFF_WHITE};
   display: block;
   font-family: Rubik, sans-serif;
   left: 0px;
@@ -176,16 +163,6 @@ const Header = styled.header`
   width: 100%;
   z-index: 1;
 `;
-
-const ThemeToggle = styled.button`
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  margin: 10px;
-  border: 1px solid ${BLACK};
-`;
-
-const ToggleButton = styled.button``;
 
 App.propTypes = {
   filterText: PropTypes.string,

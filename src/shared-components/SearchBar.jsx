@@ -2,11 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import { RED, GRAY, BLACK, PINK } from '../../assets/colors';
-import { Search as SearchIcon } from '../../assets/icons/Search';
+import { RED, GRAY, BLACK } from '../assets/colors';
+import { Search as SearchIcon } from '../assets/icons/Search';
 
 // component for generic reuse
-
 export const SearchBar = props => {
   return (
     <SearchBarStyles>
@@ -63,7 +62,7 @@ const Input = styled.input`
 
   &::placeholder {
     padding: 5px;
-    color: ${props => props.theme.background};
+    color: ${GRAY};
     font-family: Lato, sans-serif;
     font-size: 20px;
     font-weight: 900;

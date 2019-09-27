@@ -1,5 +1,5 @@
 import styled, { css, createGlobalStyle } from 'styled-components';
-
+import { SCARLET } from './colors';
 // resetting browser default styles
 export const GlobalStyles = createGlobalStyle`
   html {
@@ -7,7 +7,7 @@ export const GlobalStyles = createGlobalStyle`
   }
 
   body {
-    background-color: #ffa597;
+    background-color: ${SCARLET};
     margin: 0;
     padding: 0;
   }

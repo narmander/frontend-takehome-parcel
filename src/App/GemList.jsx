@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import { Card } from '../../shared-components/Card/Card';
-import { wrapper, Wrapper } from '../../assets/styles';
+import { Card } from '../shared-components/Card';
+import { wrapper, Wrapper } from '../assets/styles';
 
 const EmptyState = props => {
   return (
     <Wrapper>
-      <h2 style={{ margin: '0 auto' }}>{props.emptyStateText}</h2>
+      <h2>{props.emptyStateText}</h2>
     </Wrapper>
   );
 };
